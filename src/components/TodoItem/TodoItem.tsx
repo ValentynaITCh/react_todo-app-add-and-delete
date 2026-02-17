@@ -2,7 +2,7 @@
 
 import classNames from 'classnames';
 import { Todo } from '../../types/Todo';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 type Props = {
   todo: Todo;
@@ -15,8 +15,6 @@ export const TodoItem: React.FC<Props> = ({
   handleRemoveButton,
   loadingId,
 }) => {
-
-
   return (
     <div
       key={todo.id}
@@ -33,12 +31,9 @@ export const TodoItem: React.FC<Props> = ({
         />
       </label>
 
- {true ? (
+      {true ? (
         <>
-          <span
-            data-cy="TodoTitle"
-            className="todo__title"
-          >
+          <span data-cy="TodoTitle" className="todo__title">
             {todo.title}
           </span>
 
@@ -50,17 +45,17 @@ export const TodoItem: React.FC<Props> = ({
           >
             ×
           </button>
-        </>) : (
-
+        </>
+      ) : (
         <form>
           <input
             data-cy="TodoTitleField"
             type="text"
             className="todo__title-field"
             placeholder="Empty todo will be deleted"
-              />
-        </form>)}
-
+          />
+        </form>
+      )}
 
       {/* overlay will cover the todo while it is being deleted or updated */}
       <div

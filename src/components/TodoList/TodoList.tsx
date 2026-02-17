@@ -3,21 +3,17 @@ import { Todo } from '../../types/Todo';
 import { TodoItem } from '../TodoItem/TodoItem';
 
 type Props = {
-  todos: Todo[],
-  setErrorMessage: (message: string | null) => void,
-  handleRemoveButton: (id: number) => void,
-  setLoadingId: (id: number | null) => void,
-  loadingId: number | null,
-  tempTodo: Todo | null,
+  todos: Todo[];
+  handleRemoveButton: (id: number) => void;
+  loadingId: number | null;
+  tempTodo: Todo | null;
 };
 
 export const TodoList: React.FC<Props> = ({
   todos,
-  setErrorMessage,
   handleRemoveButton,
-  setLoadingId,
   loadingId,
-  tempTodo
+  tempTodo,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -33,14 +29,13 @@ export const TodoList: React.FC<Props> = ({
       ))}
 
       {tempTodo && (
-  <TodoItem
-
-    todo={tempTodo}
-    handleRemoveButton={() => {}}
-    loadingId={0}
-    key={0}
-  />
-)}
+        <TodoItem
+          todo={tempTodo}
+          handleRemoveButton={() => {}}
+          loadingId={0}
+          key={0}
+        />
+      )}
     </section>
   );
 };

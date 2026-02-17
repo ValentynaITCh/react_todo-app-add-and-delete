@@ -1,13 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
-import {
-  createTodo,
-  deleteTodo,
-  getTodos,
-  USER_ID,
-} from './api/todos';
+import { createTodo, deleteTodo, getTodos, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
 import { TodoList } from './components/TodoList/TodoList';
 import { Footer } from './components/Footer/Footer';
@@ -25,7 +20,6 @@ export const App: React.FC = () => {
 
   const hasCompleted = todos.some(todo => todo.completed);
 
-
   const countOfTodos = todos.filter(todo => todo.completed === false).length;
   const inputFocusRef = React.useRef<HTMLInputElement>(null);
 
@@ -33,23 +27,23 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     inputFocusRef.current?.focus();
-  }, [])
+  }, []);
 
   useEffect(() => {
-     setIsLoading(true);
+    setIsLoading(true);
     getTodos()
       .then(data => {
         setTodos(data);
       })
       .catch(() => {
         setErrorMessage('Unable to load todos');
-      }
-    ) .finally(() => {
-      setIsLoading(false);
-    })
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (!errorMessage) {
       return;
     }
@@ -60,7 +54,6 @@ useEffect(() => {
 
     return () => clearTimeout(timer);
   }, [errorMessage]);
-
 
   const filteredTodos = todos.filter(todo => {
     switch (filter) {
@@ -75,7 +68,6 @@ useEffect(() => {
     }
   });
 
-
   const handleFilterChange = (type: Filter) => {
     setFilter(type);
   };
@@ -84,7 +76,8 @@ useEffect(() => {
     setErrorMessage(null);
     e.preventDefault();
     if (!value.trim()) {
-       setErrorMessage('Title should not be empty');
+      setErrorMessage('Title should not be empty');
+
       return;
     }
 
@@ -93,12 +86,11 @@ useEffect(() => {
       userId: USER_ID,
       title: value.trim(),
       completed: false,
-    }
+    };
 
     setTempTodo(temp);
     setIsSubmitting(true);
     try {
-
       const newTodo = await createTodo({
         userId: USER_ID,
         title: value.trim(),
@@ -111,11 +103,11 @@ useEffect(() => {
       setErrorMessage('Unable to add a todo');
     } finally {
       setTempTodo(null);
-       setIsSubmitting(false);
+      setIsSubmitting(false);
 
-       setTimeout(() => {
-    inputFocusRef.current?.focus();
-  }, 0);
+      setTimeout(() => {
+        inputFocusRef.current?.focus();
+      }, 0);
     }
   };
 
@@ -127,37 +119,37 @@ useEffect(() => {
       setTodos(prev => prev.filter(todo => todo.id !== id));
     } catch (error) {
       setErrorMessage('Unable to delete a todo');
-       throw error;
+      throw error;
     } finally {
-       setLoadingId(null);
+      setLoadingId(null);
 
-    setTimeout(() => {
-      inputFocusRef.current?.focus();
-    }, 0);
+      setTimeout(() => {
+        inputFocusRef.current?.focus();
+      }, 0);
     }
   };
 
   const handleClearCompleted = async () => {
-  const completedTodos = todos.filter(todo => todo.completed);
+    const completedTodos = todos.filter(todo => todo.completed);
 
-  const results = await Promise.allSettled(
-    completedTodos.map(todo => deleteTodo(todo.id))
-  );
+    const results = await Promise.allSettled(
+      completedTodos.map(todo => deleteTodo(todo.id)),
+    );
 
-  const successfulIds = completedTodos
-    .filter((_, index) => results[index].status === 'fulfilled')
-    .map(todo => todo.id);
+    const successfulIds = completedTodos
+      .filter((_, index) => results[index].status === 'fulfilled')
+      .map(todo => todo.id);
 
-  if (results.some(result => result.status === 'rejected')) {
-    setErrorMessage('Unable to delete a todo');
-  }
+    if (results.some(result => result.status === 'rejected')) {
+      setErrorMessage('Unable to delete a todo');
+    }
 
-  setTodos(prev => prev.filter(todo => !successfulIds.includes(todo.id)));
+    setTodos(prev => prev.filter(todo => !successfulIds.includes(todo.id)));
 
-  setTimeout(() => {
-    inputFocusRef.current?.focus();
-  }, 0);
-};
+    setTimeout(() => {
+      inputFocusRef.current?.focus();
+    }, 0);
+  };
 
   if (!USER_ID) {
     return <UserWarning />;
@@ -171,17 +163,17 @@ useEffect(() => {
         <header className="todoapp__header">
           {/* this button should have `active` class only if all todos are completed */}
           {!isLoading && todos.length > 0 && (
-  <button
-    type="button"
-    data-cy="ToggleAllButton"
-    className='todoapp__toggle-all'
-  />
-)}
+            <button
+              type="button"
+              data-cy="ToggleAllButton"
+              className="todoapp__toggle-all"
+            />
+          )}
 
           {/* Add a todo on form submit */}
           <form onSubmit={handleSubmit}>
             <input
-            ref={inputFocusRef}
+              ref={inputFocusRef}
               data-cy="NewTodoField"
               type="text"
               className="todoapp__new-todo"
@@ -197,9 +189,7 @@ useEffect(() => {
           <>
             <TodoList
               todos={filteredTodos}
-              setErrorMessage={setErrorMessage}
               handleRemoveButton={handleRemoveButton}
-              setLoadingId={setLoadingId}
               loadingId={loadingId}
               tempTodo={tempTodo}
             />
@@ -238,4 +228,3 @@ useEffect(() => {
     </div>
   );
 };
-
