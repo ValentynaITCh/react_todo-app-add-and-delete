@@ -17,7 +17,6 @@ export const TodoList: React.FC<Props> = ({
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {/* This is a completed todo */}
 
       {todos.map(todo => (
         <TodoItem
@@ -31,9 +30,7 @@ export const TodoList: React.FC<Props> = ({
       {tempTodo && (
         <TodoItem
           todo={tempTodo}
-          handleRemoveButton={() => {}}
-          loadingId={0}
-          key={0}
+          key={tempTodo.id}
         />
       )}
     </section>

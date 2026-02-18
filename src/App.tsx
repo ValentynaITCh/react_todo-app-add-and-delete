@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { createTodo, deleteTodo, getTodos, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
@@ -11,7 +11,7 @@ import { Filter } from './types/Filter';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [filter, setFilter] = useState<Filter>('all');
+  const [filter, setFilter] = useState<Filter>(Filter.All);
   const [value, setValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loadingId, setLoadingId] = useState<number | null>(null);
@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const hasCompleted = todos.some(todo => todo.completed);
 
   const countOfTodos = todos.filter(todo => todo.completed === false).length;
-  const inputFocusRef = React.useRef<HTMLInputElement>(null);
+  const inputFocusRef = useRef<HTMLInputElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -57,13 +57,13 @@ export const App: React.FC = () => {
 
   const filteredTodos = todos.filter(todo => {
     switch (filter) {
-      case 'active':
+      case Filter.Active:
         return !todo.completed;
 
-      case 'completed':
+      case Filter.Completed:
         return todo.completed;
 
-      default:
+      case Filter.All:
         return true;
     }
   });
@@ -161,7 +161,6 @@ export const App: React.FC = () => {
 
       <div className="todoapp__content">
         <header className="todoapp__header">
-          {/* this button should have `active` class only if all todos are completed */}
           {!isLoading && todos.length > 0 && (
             <button
               type="button"
@@ -170,7 +169,6 @@ export const App: React.FC = () => {
             />
           )}
 
-          {/* Add a todo on form submit */}
           <form onSubmit={handleSubmit}>
             <input
               ref={inputFocusRef}
@@ -205,8 +203,6 @@ export const App: React.FC = () => {
         )}
       </div>
 
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
       <div
         data-cy="ErrorNotification"
         className={classNames(
@@ -222,7 +218,6 @@ export const App: React.FC = () => {
           className="delete"
           onClick={() => setErrorMessage(null)}
         />
-        {/* show only one message at a time */}
         {errorMessage}
       </div>
     </div>

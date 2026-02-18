@@ -6,15 +6,17 @@ import React from 'react';
 
 type Props = {
   todo: Todo;
-  handleRemoveButton: (id: number) => void;
-  loadingId: number | null;
+  handleRemoveButton?: (id: number) => void;
+  loadingId?: number | null;
 };
 
 export const TodoItem: React.FC<Props> = ({
   todo,
-  handleRemoveButton,
-  loadingId,
+  handleRemoveButton = () => {},
+  loadingId = 0,
 }) => {
+  const isLoading = loadingId === todo.id;
+
   return (
     <div
       key={todo.id}
@@ -25,7 +27,7 @@ export const TodoItem: React.FC<Props> = ({
         <input
           data-cy="TodoStatus"
           type="checkbox"
-          disabled={loadingId === todo.id}
+          disabled={isLoading}
           className="todo__status"
           checked={todo.completed}
         />
@@ -57,11 +59,10 @@ export const TodoItem: React.FC<Props> = ({
         </form>
       )}
 
-      {/* overlay will cover the todo while it is being deleted or updated */}
       <div
         data-cy="TodoLoader"
         className={classNames('modal overlay', {
-          'is-active': loadingId == todo.id,
+          'is-active': isLoading,
         })}
       >
         <div className="modal-background has-background-white-ter" />

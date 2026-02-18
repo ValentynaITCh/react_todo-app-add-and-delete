@@ -16,21 +16,22 @@ export const Footer: React.FC<Props> = ({
   countOfTodos,
   filter,
 }) => {
+
+  const handleAllFilterClick = () => onFilterChange(Filter.All);
+    const handleActiveFilterClick = () => onFilterChange(Filter.Active);
+      const handleCompletedFilterClick = () => onFilterChange(Filter.Completed);
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
         {countOfTodos} items left
       </span>
 
-      {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
         <a
           href="#/"
-          className={classNames('filter__link', { selected: filter === 'all' })}
+          className={classNames('filter__link', { selected: filter === Filter.All })}
           data-cy="FilterLinkAll"
-          onClick={() => {
-            onFilterChange('all');
-          }}
+          onClick={handleAllFilterClick}
         >
           All
         </a>
@@ -38,12 +39,10 @@ export const Footer: React.FC<Props> = ({
         <a
           href="#/active"
           className={classNames('filter__link', {
-            selected: filter === 'active',
+            selected: filter === Filter.Active,
           })}
           data-cy="FilterLinkActive"
-          onClick={() => {
-            onFilterChange('active');
-          }}
+          onClick={handleActiveFilterClick}
         >
           Active
         </a>
@@ -51,18 +50,16 @@ export const Footer: React.FC<Props> = ({
         <a
           href="#/completed"
           className={classNames('filter__link', {
-            selected: filter === 'completed',
+            selected: filter === Filter.Completed,
           })}
           data-cy="FilterLinkCompleted"
-          onClick={() => {
-            onFilterChange('completed');
-          }}
+          onClick={handleCompletedFilterClick
+          }
         >
           Completed
         </a>
       </nav>
 
-      {/* this button should be disabled if there are no completed todos */}
 
       <button
         type="button"
