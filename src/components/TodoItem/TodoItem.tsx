@@ -7,15 +7,15 @@ import React from 'react';
 type Props = {
   todo: Todo;
   handleRemoveButton?: (id: number) => void;
-  loadingId?: number | null;
+  loadingsIds?: number[];
 };
 
 export const TodoItem: React.FC<Props> = ({
   todo,
   handleRemoveButton = () => {},
-  loadingId = 0,
+  loadingsIds = [],
 }) => {
-  const isLoading = loadingId === todo.id;
+  const isLoading = loadingsIds.includes(todo.id);
 
   return (
     <div

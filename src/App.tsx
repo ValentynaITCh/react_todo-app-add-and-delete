@@ -14,7 +14,7 @@ export const App: React.FC = () => {
   const [filter, setFilter] = useState<Filter>(Filter.All);
   const [value, setValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [loadingsIds, setLoadingsIds] = useState<number[]>([]);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -112,16 +112,19 @@ export const App: React.FC = () => {
   };
 
   const handleRemoveButton = async (id: number) => {
-    try {
-      setLoadingId(id);
-      await deleteTodo(id);
+     setLoadingsIds(prev => [...prev, id]);
+     try {
+        await Promise.all([
+        deleteTodo(id),
+        new Promise(resolve => setTimeout(resolve, 500)),
+      ]);
 
       setTodos(prev => prev.filter(todo => todo.id !== id));
     } catch (error) {
       setErrorMessage('Unable to delete a todo');
       throw error;
     } finally {
-      setLoadingId(null);
+      setLoadingsIds(prev => prev.filter(itemId => itemId !== id));
 
       setTimeout(() => {
         inputFocusRef.current?.focus();
@@ -188,7 +191,7 @@ export const App: React.FC = () => {
             <TodoList
               todos={filteredTodos}
               handleRemoveButton={handleRemoveButton}
-              loadingId={loadingId}
+              loadingsIds={loadingsIds}
               tempTodo={tempTodo}
             />
 
