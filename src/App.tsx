@@ -15,15 +15,14 @@ export const App: React.FC = () => {
   const [value, setValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loadingsIds, setLoadingsIds] = useState<number[]>([]);
-  const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const hasCompleted = todos.some(todo => todo.completed);
 
-  const countOfTodos = todos.filter(todo => todo.completed === false).length;
-  const inputFocusRef = useRef<HTMLInputElement>(null);
+  const countOfTodos = todos.filter(
+    todo => !todo.completed && todo.id !== 0).length;
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputFocusRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputFocusRef.current?.focus();
@@ -88,8 +87,9 @@ export const App: React.FC = () => {
       completed: false,
     };
 
-    setTempTodo(temp);
-    setIsSubmitting(true);
+    setTodos(prev => [...prev, temp]);
+    setLoadingsIds(prev => [...prev, 0]);
+
     try {
       const newTodo = await createTodo({
         userId: USER_ID,
@@ -97,13 +97,14 @@ export const App: React.FC = () => {
         completed: false,
       });
 
-      setTodos(prev => [...prev, newTodo]);
+      setTodos(prev => prev.map(todo => (todo.id === 0 ? newTodo : todo)));
+
       setValue('');
     } catch (error) {
+      setTodos(prev => prev.filter(todo => todo.id !== 0));
       setErrorMessage('Unable to add a todo');
     } finally {
-      setTempTodo(null);
-      setIsSubmitting(false);
+      setLoadingsIds(prev => prev.filter(id => id !== 0));
 
       setTimeout(() => {
         inputFocusRef.current?.focus();
@@ -112,9 +113,9 @@ export const App: React.FC = () => {
   };
 
   const handleRemoveButton = async (id: number) => {
-     setLoadingsIds(prev => [...prev, id]);
-     try {
-        await Promise.all([
+    setLoadingsIds(prev => [...prev, id]);
+    try {
+      await Promise.all([
         deleteTodo(id),
         new Promise(resolve => setTimeout(resolve, 500)),
       ]);
@@ -181,7 +182,7 @@ export const App: React.FC = () => {
               placeholder="What needs to be done?"
               value={value}
               onChange={e => setValue(e.target.value)}
-              disabled={isSubmitting}
+              disabled={loadingsIds.includes(0)}
             />
           </form>
         </header>
@@ -192,7 +193,6 @@ export const App: React.FC = () => {
               todos={filteredTodos}
               handleRemoveButton={handleRemoveButton}
               loadingsIds={loadingsIds}
-              tempTodo={tempTodo}
             />
 
             <Footer

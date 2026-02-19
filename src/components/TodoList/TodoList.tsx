@@ -6,14 +6,12 @@ type Props = {
   todos: Todo[];
   handleRemoveButton: (id: number) => void;
   loadingsIds: number[];
-  tempTodo: Todo | null;
 };
 
 export const TodoList: React.FC<Props> = ({
   todos,
   handleRemoveButton,
   loadingsIds,
-  tempTodo,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -25,8 +23,6 @@ export const TodoList: React.FC<Props> = ({
           key={todo.id}
         />
       ))}
-
-      {tempTodo && <TodoItem todo={tempTodo} key={tempTodo.id} />}
     </section>
   );
 };

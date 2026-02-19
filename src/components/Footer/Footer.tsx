@@ -30,7 +30,7 @@ export const Footer: React.FC<Props> = ({
     },
     {
       href: '#/',
-      dataCy: 'FilterLinkAllActive',
+      dataCy: 'FilterLinkActive',
       label: 'Active',
       value: Filter.Active,
       onClick: handleActiveFilterClick,
@@ -42,7 +42,7 @@ export const Footer: React.FC<Props> = ({
       value: Filter.Completed,
       onClick: handleCompletedFilterClick,
     },
-  ]
+  ];
 
   return (
     <footer className="todoapp__footer" data-cy="Footer">
@@ -54,17 +54,17 @@ export const Footer: React.FC<Props> = ({
         {buttonLinks.map(link => {
           return (
             <a
-            key={link.value}
-          href={link.href}
-          className={classNames('filter__link', {
-            selected: filter === link.value,
-          })}
-          data-cy={link.dataCy}
-          onClick={link.onClick}
-        >
-          {link.label}
-        </a>
-          )
+              key={link.value}
+              href={link.href}
+              className={classNames('filter__link', {
+                selected: filter === link.value,
+              })}
+              data-cy={link.dataCy}
+              onClick={link.onClick}
+            >
+              {link.label}
+            </a>
+          );
         })}
       </nav>
 
